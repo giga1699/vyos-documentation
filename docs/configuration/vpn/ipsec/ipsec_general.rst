@@ -108,6 +108,42 @@ In IKEv2, DPD sends messages every configured interval. If one request
 is not responded, Strongswan execute its retransmission algorithm with
 its timers.  `IKEv2 Retransmission`_
 
+*********************************
+Post-Quantum Preshared Keys (PPK)
+*********************************
+
+Post-Quantum Preshared Keys help provide some quantum resistance to IPSEC
+tunnels when a Post-Quantum key exchange algorithm such as ML-KEM is not
+available. The use of PPKs in IKEv2 is described in :rfc:`8784`.
+
+PPKs can be configued within VyOS under the vpn.ipsec.authentication.ppk
+config.
+
+.. cfgmod:: edit vpn authentication ppk <name>
+
+PPKs need an id and a secret value. The ID and secret must match if PPKs are
+required for a successful IPSEC connection. The secret can be plain text, a
+hex value, or a base64 value. The default is plain text. If using another
+type of value, you must define the secret-type.
+
+.. cfgmod:: set vpn authentication ppk <name> secret-type <plaintext|hex|base64>
+
+To use a PPK within a site-to-site or remote-access connection, define the PPK
+id under the connection.
+
+.. cfgmod:: set vpn ipsec site-to-site <name> ppk id <id>
+
+Optionally, you can require the use of PPK to have a successful connection.
+
+.. cfgmod:: set vpn ipsec site-to-site <name> ppk required
+
+To confirm the use of a PPK in an IKE SA, check for the presence of "up-ppk" in
+the output of the show command under the status heading. If you only see "up", or
+"down", PPK is not in use.
+
+.. cfgmod:: show vpn ike sa
+
+
 *****************
 Configuration IKE
 *****************
